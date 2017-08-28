@@ -13,14 +13,27 @@ class TrafficGenerator{
    */
   constructor(config, modifiers) {
     modifiers = modifiers || [];
-    if(!config || typeof config !== 'object' || !Array.isArray(modifiers)){
+    let lenOfArrays = [config.host, config.title, config.path].filter((curr)=>{return Array.isArray(curr)}).length;
+    let consistentConfig = lenOfArrays == 0 || lenOfArrays == 3;
+    if(!config || typeof config !== 'object' || !Array.isArray(modifiers) || consistentConfig){
       throw new Error('Invalid inputs.');
     }
-    this.defaultHit = {
-      dh: config.host,
-      dt: config.title,
-      dp: config.path
-    };
+    if(lenOfArrays == 0) {
+        this.defaultHit = {
+            dh: config.host,
+            dt: config.title,
+            dp: config.path
+        };
+    }else{
+        this.defaultHit = [];
+        for(var i=0; i<lenOfArrays; i++){
+            this.defaultHit.push({
+                dh: config.host[i],
+                dt: config.title[i],
+                dp: config.path[i]
+            });
+        }
+    }
 
     // Ensure there is always at least one modifier
     modifiers.push(new Modifier(config));
@@ -29,14 +42,14 @@ class TrafficGenerator{
   }
   /**
    * Adds a modifier that will be used when generating hits
-   * @param {Modifier<Object>} modifier 
+   * @param {Modifier<Object>} modifier
    */
   addModifier(modifier) {
     this.modifiers.push(modifier);
   }
   /**
-   * Generates the numberOfHits requested, modifying each based on the modifiers set. 
-   * @param  {Number} numberofHits 
+   * Generates the numberOfHits requested, modifying each based on the modifiers set.
+   * @param  {Number} numberofHits
    * @return {Array}                Array of hits
    */
   generate(numberofHits) {
@@ -50,7 +63,7 @@ class TrafficGenerator{
       let modifiedHit = self.modifiers.reduce((prev, curr, index) => {
         return self.modifiers[index].modify(prev);
       }, _.clone(self.defaultHit));
-      
+
       hits.push(modifiedHit);
     }
     return hits;

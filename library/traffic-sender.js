@@ -16,9 +16,9 @@ class TrafficSender {
   }
   /**
    * Sends an array of hits to Google Analytics
-   * 
+   *
    * @param  {Array}                  data  an array of hits
-   * @return {Promise<Array, Error>}  
+   * @return {Promise<Array, Error>}
    */
   send(hits) {
     const self = this;
@@ -27,6 +27,11 @@ class TrafficSender {
     }
     const results = Promise.map(hits, (hit) => {
       let visitor = ua(self.trackingId);
+      if(Array.isArray(hit)){
+          return Promise.all(Promise.map(hit, (subhit) => {
+              return visitor.pageview(subhit).sendAsync();
+          }));
+      }
       return visitor.pageview(hit).sendAsync();
     });
 
