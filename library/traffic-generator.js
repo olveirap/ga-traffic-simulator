@@ -15,8 +15,13 @@ class TrafficGenerator{
     modifiers = modifiers || [];
     let lenOfArrays = [config.host, config.title, config.path].filter((curr)=>{return Array.isArray(curr)}).length;
     let consistentConfig = lenOfArrays == 0 || lenOfArrays == 3;
-    if(!config || typeof config !== 'object' || !Array.isArray(modifiers) || consistentConfig){
+    if(!config || typeof config !== 'object' || !Array.isArray(modifiers) || !consistentConfig){
+       console.log("config exists? "+config);
+      console.log("typeof config? "+typeof config);
+      console.log("!Array.isArray(modifiers)? " +!Array.isArray(modifiers));
+      console.log("consistent config? " +consistentConfig);
       throw new Error('Invalid inputs.');
+     
     }
     if(lenOfArrays == 0) {
         this.defaultHit = {
@@ -26,7 +31,7 @@ class TrafficGenerator{
         };
     }else{
         this.defaultHit = [];
-        for(var i=0; i<lenOfArrays; i++){
+        for(var i=0; i<config.host.length; i++){
             this.defaultHit.push({
                 dh: config.host[i],
                 dt: config.title[i],
@@ -59,12 +64,25 @@ class TrafficGenerator{
     let hits = [];
     const self = this;
 
-    for(let i = 0; i < numberofHits; i++){
-      let modifiedHit = self.modifiers.reduce((prev, curr, index) => {
-        return self.modifiers[index].modify(prev);
-      }, _.clone(self.defaultHit));
+    if(Array.isArray(self.defaultHit)){
+      for(let j = 0; j < self.defaultHit.length; j++){
+        for(let i = 0; i < numberofHits; i++){
+        let modifiedHit = self.modifiers.reduce((prev, curr, index) => {
+          return self.modifiers[index].modify(prev);
+        }, _.clone(self.defaultHit[j]));
 
-      hits.push(modifiedHit);
+        hits.push(modifiedHit);
+        }
+      }
+    }
+    else{
+      for(let i = 0; i < numberofHits; i++){
+        let modifiedHit = self.modifiers.reduce((prev, curr, index) => {
+          return self.modifiers[index].modify(prev);
+        }, _.clone(self.defaultHit));
+
+        hits.push(modifiedHit);
+      }
     }
     return hits;
   }

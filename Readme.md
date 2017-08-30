@@ -6,13 +6,50 @@
 
 A CLI to simulate traffic to google analytics
 
-## Usage
+## Install
 
 To install ga-traffic-simulator from npm, run:
 
 ```
 $ npm install -g ga-traffic-simulator
 ```
+
+To install from local branch, use npm install inside the repository.
+
+```npm install```
+
+
+## Config
+
+To run it you will need a config file with the following structure:
+
+```
+  "trackingId": "UA-XXXXXX-X",
+  "host": "hostname.com",
+  "path": "/",
+  "title": "title",
+  "hits": 10,
+  "modifiers": {
+    "randomValue": [{
+      "key": "cd1",
+      "type": "discrete",
+      "range": ["1", "2", "3"]
+    }]
+  }
+}
+```
+
+Host, path and title can be provided arrays (make sure they are the same length) to simulate a navigation path for a same visitor. 
+
+Current only available modifier is randomValue, which allowed types "discrete" or "random". Both take a range, but in the case of type "random", it randomizes between two values provided in an array, while "discrete" randomizes betweent the given values in the range array.
+
+## Usage
+
+To run it:
+
+```ga-traffic-simulator run (PATH_TO_CONFIG)```
+
+For help, run:
 
 ```ga-traffic-simulator --help```
 
