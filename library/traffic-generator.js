@@ -65,13 +65,13 @@ class TrafficGenerator{
     const self = this;
 
     if(Array.isArray(self.defaultHit)){
-      for(let j = 0; j < self.defaultHit.length; j++){
-        for(let i = 0; i < numberofHits; i++){
-        let modifiedHit = self.modifiers.reduce((prev, curr, index) => {
-          return self.modifiers[index].modify(prev);
-        }, _.clone(self.defaultHit[j]));
+      for(let i = 0; i < numberofHits; i++){
+        for(let j = 0; j < self.defaultHit.length; j++){
+          let modifiedHit = self.modifiers.reduce((prev, curr, index) => {
+            return self.modifiers[index].modify(prev);
+          }, _.clone(self.defaultHit[j]));
 
-        hits.push(modifiedHit);
+          hits.push(modifiedHit);
         }
       }
     }
